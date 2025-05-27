@@ -1,4 +1,5 @@
 // ==UserScript==
+// @id           IITC-Microfield-Analyzer@gpt
 // @name         Microfield Analyzer
 // @version      1.0
 // @category     Highlighter

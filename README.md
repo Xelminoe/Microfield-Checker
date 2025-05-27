@@ -6,7 +6,7 @@ The Microfield Analyzer IITC plugin helps identify optimal microfielding structu
 
   Draw Tools plugin enabled (included in IITC by default).
 
-  A region of the map with visible portals and links.
+  Keep All Data plugin enabled.
 
 🧾 Installation
 
@@ -27,6 +27,8 @@ The Microfield Analyzer IITC plugin helps identify optimal microfielding structu
     The 3 portals must be mutually linked (forming a triangle).
   
     If you place more than 3 markers, or markers are not on portals, the script will terminate with a warning.
+
+    Turn on "Keep all portals" and "Keep all links" if your field spans over one screen.
 
   Step 2: Run the Script
   

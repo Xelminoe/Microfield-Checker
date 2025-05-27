@@ -1,7 +1,7 @@
 // ==UserScript==
 // @id           IITC-Microfield-Analyzer@gpt
-// @name         Microfield Analyzer
-// @version      1.0
+// @name         Microfield Analyzer Mobile Test
+// @version      1.1
 // @category     Highlighter
 // @description  Detect and visualize optimal microfield levels inside a drawn triangle.
 // @match        https://intel.ingress.com/*
@@ -206,11 +206,12 @@
 
     window.plugin.microfieldAnalyzer = plugin;
 
-    if (window.iitcLoaded) {
-      plugin.setup();
-    } else {
-      window.addHook('iitcLoaded', plugin.setup);
-    }
+    if (!window.bootPlugins) window.bootPlugins = [];
+    window.bootPlugins.push(plugin.setup);
+
+    // Ensure setup runs if IITC is already loaded
+    if (window.iitcLoaded) plugin.setup();
+
   }
 
   const script = document.createElement('script');

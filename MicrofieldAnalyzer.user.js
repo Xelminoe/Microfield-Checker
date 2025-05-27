@@ -1,6 +1,6 @@
 // ==UserScript==
 // @id           IITC-Microfield-Analyzer@gpt
-// @name         Microfield Analyzer Mobile Test
+// @name         Microfield Analyzer
 // @version      1.1
 // @category     Highlighter
 // @description  Detect and visualize optimal microfield levels inside a drawn triangle.

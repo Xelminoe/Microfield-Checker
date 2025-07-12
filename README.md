@@ -15,42 +15,45 @@
 
 ## 📦 Features
 
-- Select 3 linked portals as a base triangle.
-- Automatically discover all portals nested within the triangle.
-- Check if each nested portal forms valid microfields with all three triangle corners.
-- Build nesting layers recursively.
-- Visualize nesting levels with colored markers and labels.
-- Highlight missing fields as semi-transparent red triangle overlays.
-- Show detailed field count statistics in an alert report.
+* Select 3 linked portals as a base triangle using the **DrawTools** plugin
+* Automatically discover all portals nested within the triangle
+* Check if each nested portal forms valid microfields with all three triangle corners
+* Recursively build nesting layers using geometric and link conditions
+* Visualize nesting levels with colored circular markers and numeric labels
+* Highlight missing fields using semi-transparent red geodesic triangle overlays
+* Display a draggable, closable summary panel with detailed field statistics and interactive missing field list
 
 ---
 
 ## 🧩 How It Works
 
-1. You draw 3 **markers** using the **DrawTools** plugin to define the base triangle.
-2. The plugin matches these markers to actual portals on the map.
-3. It verifies whether the 3 portals form a fully linked triangle.
-4. All other portals inside this triangle are analyzed recursively:
-   - If a portal can link to all 3 points of a triangle, new nested triangles are created.
-   - Each successful nesting increases the portal's level.
-5. Missing fields (triangles not covered by an actual field) are detected and rendered.
+1. You draw **3 markers** using the **DrawTools** plugin to define the base triangle
+2. The plugin matches these markers to actual **portals** on the map
+3. It verifies whether the 3 portals are **fully linked**, forming a valid triangle
+4. All other portals inside this triangle are **analyzed recursively**:
+
+   * If a portal can link to all 3 triangle vertices, it is considered **well-nested**
+   * New triangles are formed, and the nesting **level** increases
+5. If a triangle of 3 linked portals **does not correspond to an actual field**, it is flagged as a **missing field**
 
 ---
 
 ## 📊 Output
 
-After running the plugin, you'll see:
+After running the plugin, you’ll see:
 
-- Colored circular markers for nested portals, labeled by level.
-- Red circular markers for portals that were inside the triangle but not used.
-- Semi-transparent red triangle overlays showing **missing fields**.
-- A popup summary with:
-  - Total number of portals
-  - Number of well-nested portals
-  - Optimal field count
-  - Theoretical and actual field count
-  - Missing field count
-  - List of all missing triangle coordinates
+* **Colored circular markers** for all nested portals, each labeled with its nesting level
+* **Red circular markers** for portals that were inside the triangle but not used in any nesting
+* **Semi-transparent red geodesic triangles** for each missing field
+* A **draggable info panel** summarizing:
+
+  * Total number of portals inside the base triangle
+  * Number of **well-nested** portals (including base)
+  * **Optimal** field count for perfect nesting
+  * **Theoretical** number of nested fields based on portal count
+  * **Actual** number of fields (i.e., those confirmed to exist)
+  * **Missing** field count
+  * Clickable list of each missing triangle’s coordinates to highlight on the map
 
 ---
 

@@ -2,6 +2,8 @@
 
 **Microfield Checker** is an IITC (Ingress Intel Total Conversion) plugin that checks microfield nesting based on a triangle of portals. It identifies potential nested microfields, computes nesting levels, and highlights missing fields to help optimize fielding strategies.
 
+![Example Usage](Example.jpg)
+
 ---
 
 ## 🔍 Application Scenarios

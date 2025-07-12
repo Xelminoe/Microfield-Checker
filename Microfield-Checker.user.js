@@ -1,15 +1,16 @@
 // ==UserScript==
-// @id           IITC-Microfield-Checker
+// @id           microfield-checker@Xelminoe
 // @name         Microfield Checker
 // @author       Xelminoe
-// @version      1.0.2
+// @version      1.0.3
 // @category     Info
 // @description  Check optimal microfield inside a triangle.
 // @match        https://intel.ingress.com/*
 // @grant        none
 // @downloadURL  https://raw.github.com/Xelminoe/Microfield-Checker/main/Microfield-Checker.user.js
 // @updateURL    https://raw.github.com/Xelminoe/Microfield-Checker/main/Microfield-Checker.user.js
-// @depend       Draw tools
+// @depends      draw-tools@breunigs
+// @recommends   keepalldata@DanielOnDiordna
 // ==/UserScript==
 
 (function () {
@@ -35,9 +36,9 @@
                 if (
                     ((polygon[i].lat > point.lat) !== (polygon[j].lat > point.lat)) &&
                     (point.lng <
-                        (polygon[j].lng - polygon[i].lng) * (point.lat - polygon[i].lat) /
-                        (polygon[j].lat - polygon[i].lat) +
-                        polygon[i].lng)
+                     (polygon[j].lng - polygon[i].lng) * (point.lat - polygon[i].lat) /
+                     (polygon[j].lat - polygon[i].lat) +
+                     polygon[i].lng)
                 ) {
                     c = !c;
                 }
@@ -50,16 +51,24 @@
             return Object.values(window.links).some(link => {
                 const [a, b] = link.getLatLngs();
                 const same = (a, b, x, y) =>
-                    a.lat === x.lat &&
-                    a.lng === x.lng &&
-                    b.lat === y.lat &&
-                    b.lng === y.lng;
+                a.lat === x.lat &&
+                      a.lng === x.lng &&
+                      b.lat === y.lat &&
+                      b.lng === y.lng;
                 return same(a, b, p1, p2) || same(b, a, p1, p2);
             });
         };
 
         // Main analysis function
         plugin.analyze = function () {
+            if (window._microfieldLayer) {
+                window._microfieldLayer.clearLayers();
+            } else {
+                window._microfieldLayer = L.layerGroup().addTo(window.map);
+            }
+            const resultLayer = window._microfieldLayer;
+
+
             const markers = [];
 
             // Collect user-drawn markers from drawTools
@@ -109,9 +118,9 @@
             // Helper: find the portal in portalList that matches a marker
             function matchMarker(marker) {
                 return portalList.find(p =>
-                    Math.abs(p.lat - marker.lat) < plugin.TOLERANCE &&
-                    Math.abs(p.lng - marker.lng) < plugin.TOLERANCE
-                );
+                                       Math.abs(p.lat - marker.lat) < plugin.TOLERANCE &&
+                                       Math.abs(p.lng - marker.lng) < plugin.TOLERANCE
+                                      );
             }
 
             // Match 3 drawn markers to real portals
@@ -207,36 +216,94 @@
                     fillColor: color,
                     fillOpacity: 0.8,
                     weight: 2
-                }).addTo(map);
+                });
+                resultLayer.addLayer(marker);
 
                 const label = L.tooltip({
                     permanent: true,
                     direction: 'center',
                     className: 'mf-label'
                 })
-                    .setContent(`${lvl}`)
-                    .setLatLng([lat, lng]);
+                .setContent(`${lvl}`)
+                .setLatLng([lat, lng]);
 
                 marker.bindTooltip(label);
+                resultLayer.addLayer(label);
             }
 
             // Mark un-nested portals inside the triangle with red circles
             for (const p of insidePortals) {
                 if (!levelMap.has(plugin.key(p))) {
-                    L.circleMarker([p.lat, p.lng], {
+                    const marker = L.circleMarker([p.lat, p.lng], {
                         radius: 6,
                         color: 'red',
                         fillColor: 'red',
                         fillOpacity: 1,
                         weight: 2
-                    }).addTo(map);
+                    });
+                    resultLayer.addLayer(marker);
                 }
             }
 
-            // Draw semi-transparent red polygons for missing fields
-            for (const tri of missingFields) {
+            console.log("Microfield Level Map:", levelMap);
+
+            // Remove existing info panel if present
+            $('#microfield-info-panel').remove();
+
+            // Create panel container
+            const panel = $(`
+              <div id="microfield-info-panel" style="
+                position: absolute;
+                top: 80px;
+                right: 20px;
+                width: 360px;
+                background: #ffffffee;
+                border: 1px solid #aaa;
+                padding: 10px;
+                font-size: 13px;
+                z-index: 9999;
+                box-shadow: 0 0 8px rgba(0,0,0,0.2);
+                border-radius: 6px;
+              ">
+                <div style="text-align: right;">
+                  <button id="microfield-info-close" style="border: none; background: none; font-size: 16px; cursor: pointer;">✖</button>
+                </div>
+                <div id="microfield-info-content"></div>
+              </div>
+            `);
+            $('body').append(panel);
+            $('#microfield-info-panel').draggable();
+
+            // Handle close button
+            $('#microfield-info-close').on('click', () => {
+                $('#microfield-info-panel').remove();
+                if (window._microfieldLayer) {
+                    window._microfieldLayer.clearLayers();
+                }
+            });
+
+
+            // Populate stats info
+            const info = `
+                <b>Microfield Analysis Complete</b><br/>
+                Total Portal Number: ${insidePortals.length + 3}<br/>
+                Well-Nested Portals Number: ${levelMap.size}<br/>
+                Field Optimal Number: ${insidePortals.length * 3 + 1}<br/>
+                Well-Nested Field Theory Number: ${(levelMap.size - 3) * 3 + 1}<br/>
+                Well-Nested Field Actual Number: ${(levelMap.size - 3) * 3 + 1 - missingFields.length}<br/>
+                Well-Nested Field Missing Number: ${missingFields.length}<br/>
+                ${missingFields.length > 0 ? "<br/><b>Click Each Missing Field to Highlight:</b>" : ""}
+                `;
+
+            $('#microfield-info-content').html(info);
+
+            // Clean up previous polygons
+            const missingPolygons = [];
+
+            missingFields.forEach((tri, index) => {
                 const latlngs = tri.points.map(p => [p.lat, p.lng]);
 
+                // Create red triangle polygon
                 const poly = L.geodesicPolygon(latlngs, {
                     color: 'red',
                     fillColor: 'red',
@@ -245,38 +312,27 @@
                     dashArray: '5,5',
                     interactive: false
                 });
+                resultLayer.addLayer(poly);
 
-                poly.addTo(window.map);
-            }
+                poly._highlighted = false;
+                missingPolygons.push(poly);
 
-            console.log("Microfield Level Map:", levelMap);
+                // Generate display text
+                const coordsText = tri.points.map(p => `(${p.lat.toFixed(6)}, ${p.lng.toFixed(6)})`).join(" - ");
 
-            // Final report with stats and missing field summary
-            const totalPortals = insidePortals.length + 3;
-            const optimalFieldCount = insidePortals.length * 3 + 1;
-            const theoryFieldCount = (levelMap.size - 3) * 3 + 1;
-            const actualFieldCount = theoryFieldCount - missingFields.length;
-            const missingFieldCount = missingFields.length;
-
-            let missingText = "";
-            if (missingFields.length > 0) {
-                missingText = "\nMissing Fields:";
-                missingFields.forEach((f, i) => {
-                    const coords = f.points.map(p => `(${p.lat.toFixed(6)}, ${p.lng.toFixed(6)})`).join(" - ");
-                    missingText += `\n${i + 1}. ${coords}`;
+                // Add clickable line to panel
+                const entry = $(`<div style="margin: 4px 0; cursor: pointer;">${index + 1}. ${coordsText}</div>`);
+                entry.on('click', () => {
+                    poly._highlighted = !poly._highlighted;
+                    if (poly._highlighted) {
+                        poly.setStyle({ weight: 3, color: 'orange', fillOpacity: 0.4 });
+                    } else {
+                        poly.setStyle({ weight: 1, color: 'red', fillOpacity: 0.15 });
+                    }
                 });
-            }
+                $('#microfield-info-content').append(entry);
+            });
 
-            alert(
-                `Microfield Check Complete.\n` +
-                `Total Visible Portal Number: ${totalPortals}\n` +
-                `Well-Nested Portals Number: ${levelMap.size}\n` +
-                `Field Optimal Number: ${optimalFieldCount}\n` +
-                `Well-Nested Field Theory Number: ${theoryFieldCount}\n` +
-                `Well-Nested Field Actual Number: ${actualFieldCount}\n` +
-                `Well-Nested Field Missing Number: ${missingFieldCount}` +
-                missingText
-            );
         };
 
         // Add a button to IITC toolbox to trigger analysis

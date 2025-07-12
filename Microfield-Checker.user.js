@@ -268,8 +268,8 @@
             }
 
             alert(
-                `Microfield Analysis Complete.\n` +
-                `Total Portal Number: ${totalPortals}\n` +
+                `Microfield Check Complete.\n` +
+                `Total Visible Portal Number: ${totalPortals}\n` +
                 `Well-Nested Portals Number: ${levelMap.size}\n` +
                 `Field Optimal Number: ${optimalFieldCount}\n` +
                 `Well-Nested Field Theory Number: ${theoryFieldCount}\n` +

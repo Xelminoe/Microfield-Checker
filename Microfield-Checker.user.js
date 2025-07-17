@@ -1,6 +1,6 @@
 // ==UserScript==
 // @id           microfield-checker@Xelminoe
-// @name         Microfield Checker
+// @name         Microfield Checker Testing
 // @author       Xelminoe
 // @version      1.0.3
 // @category     Info

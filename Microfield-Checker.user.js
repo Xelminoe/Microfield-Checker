@@ -3,8 +3,8 @@
 // @name         Microfield Checker
 // @author       Xelminoe
 // @version      1.0.5
-// @category     Info
-// @description  Check optimal microfield inside a triangle.
+// @category     Layer
+// @description  Check optimal microfield inside a triangle. Ideal for nearly-completed or densely built micro-fields.
 // @match        https://intel.ingress.com/*
 // @grant        none
 // @downloadURL  https://raw.github.com/Xelminoe/Microfield-Checker/main/Microfield-Checker.user.js

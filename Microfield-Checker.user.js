@@ -1,6 +1,6 @@
 // ==UserScript==
 // @id           microfield-checker@Xelminoe
-// @name         Microfield Checker Testing02
+// @name         Microfield Checker Testing03
 // @author       Xelminoe
 // @version      1.0.3
 // @category     Info
@@ -322,10 +322,8 @@
 
             $('#microfield-info-content').html(info);
             $('#microfield-info-content').css({
-              'min-height': '100px',
-              'overflow': 'auto',
-              'background': '#eee'
-            });
+              'color': '#111'
+            }); // Fixing render issue for mobile
 
             // Clean up previous polygons
             const missingPolygons = [];

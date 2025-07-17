@@ -297,7 +297,7 @@
               </div>
             `);
             $('body').append(panel);
-            //$('#microfield-info-panel').draggable();
+            $('#microfield-info-panel').draggable();
 
             // Handle close button
             $('#microfield-info-close').on('click', () => {
@@ -321,6 +321,7 @@
                 `;
 
             $('#microfield-info-content').html(info);
+            console.log('info content:', $('#microfield-info-content').html()); // Testing for mobile
 
             // Clean up previous polygons
             const missingPolygons = [];

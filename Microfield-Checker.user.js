@@ -1,6 +1,6 @@
 // ==UserScript==
 // @id           microfield-checker@Xelminoe
-// @name         Microfield Checker Testing
+// @name         Microfield Checker Testing02
 // @author       Xelminoe
 // @version      1.0.3
 // @category     Info
@@ -321,7 +321,11 @@
                 `;
 
             $('#microfield-info-content').html(info);
-            console.log('info content:', $('#microfield-info-content').html()); // Testing for mobile
+            $('#microfield-info-content').css({
+              'min-height': '100px',
+              'overflow': 'auto',
+              'background': '#eee'
+            });
 
             // Clean up previous polygons
             const missingPolygons = [];
@@ -358,7 +362,8 @@
                 });
                 $('#microfield-info-content').append(entry);
             });
-          };
+            console.log('info content:', $('#microfield-info-content').html()); // Testing for mobile
+          }; // End of const runAnalysis
         
           if (isMobileDevice()) {
             waitInfoScreenClosed(runAnalysis);

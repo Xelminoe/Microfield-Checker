@@ -1,8 +1,8 @@
 // ==UserScript==
 // @id           microfield-checker@Xelminoe
-// @name         Microfield Checker Testing
+// @name         Microfield Checker
 // @author       Xelminoe
-// @version      1.0.4
+// @version      1.0.5
 // @category     Info
 // @description  Check optimal microfield inside a triangle.
 // @match        https://intel.ingress.com/*
@@ -45,29 +45,6 @@
             }
             return c;
         };
-
-        function isMobileDevice() {
-            return /android|iphone|ipad|mobile/i.test(navigator.userAgent);
-        }
-
-        function waitInfoScreenClosed(callback) {
-          const wrapper = document.getElementById('scrollwrapper');
-          if (!wrapper || getComputedStyle(wrapper).display === 'none') {
-            callback();
-            return;
-          }
-
-          const observer = new MutationObserver(() => {
-           if (getComputedStyle(wrapper).display === 'none') {
-              observer.disconnect();
-              callback();
-            }
-          });
-
-          observer.observe(wrapper, { attributes: true, attributeFilter: ['style'] });
-        }
-
-
 
         // Check if two portals are linked (exact coordinate match, no tolerance)
         plugin.portalsLinked = function (p1, p2) {
@@ -366,7 +343,7 @@
           const updatestatus = document.getElementById('updatestatus');
         
           if (updatestatus && getComputedStyle(updatestatus).display === 'none') {
-            // 📱 Mobile 模式且 info panel 正打开，需要等待其关闭
+            // 📱 Mobile mode and info panel on. Waiting for it to be closed.
             const observer = new MutationObserver(() => {
               if (getComputedStyle(updatestatus).display === 'block') {
                 observer.disconnect();
@@ -376,7 +353,7 @@
         
             observer.observe(updatestatus, { attributes: true, attributeFilter: ['style'] });
           } else {
-            // 💻 Desktop 模式 或 mobile 模式 info panel 已关闭
+            // 💻 Desktop mode
             runAnalysis();
           }
         };

@@ -297,7 +297,7 @@
               </div>
             `);
             $('body').append(panel);
-            $('#microfield-info-panel').draggable();
+            //$('#microfield-info-panel').draggable();
 
             // Handle close button
             $('#microfield-info-close').on('click', () => {

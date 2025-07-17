@@ -1,6 +1,6 @@
 // ==UserScript==
 // @id           microfield-checker@Xelminoe
-// @name         Microfield Checker
+// @name         Microfield Checker Testing
 // @author       Xelminoe
 // @version      1.0.4
 // @category     Info
@@ -363,9 +363,20 @@
             console.log('info content:', $('#microfield-info-content').html()); // Testing for mobile
           }; // End of const runAnalysis
         
-          if (isMobileDevice()) {
-            waitInfoScreenClosed(runAnalysis);
+          const updatestatus = document.getElementById('updatestatus');
+        
+          if (updatestatus && getComputedStyle(updatestatus).display === 'none') {
+            // 📱 Mobile 模式且 info panel 正打开，需要等待其关闭
+            const observer = new MutationObserver(() => {
+              if (getComputedStyle(updatestatus).display === 'block') {
+                observer.disconnect();
+                runAnalysis();
+              }
+            });
+        
+            observer.observe(updatestatus, { attributes: true, attributeFilter: ['style'] });
           } else {
+            // 💻 Desktop 模式 或 mobile 模式 info panel 已关闭
             runAnalysis();
           }
         };

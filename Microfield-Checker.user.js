@@ -46,6 +46,29 @@
             return c;
         };
 
+        function isMobileDevice() {
+            return /android|iphone|ipad|mobile/i.test(navigator.userAgent);
+        }
+
+        function waitInfoScreenClosed(callback) {
+          const wrapper = document.getElementById('scrollwrapper');
+          if (!wrapper || getComputedStyle(wrapper).display === 'none') {
+            callback();
+            return;
+          }
+
+          const observer = new MutationObserver(() => {
+           if (getComputedStyle(wrapper).display === 'none') {
+              observer.disconnect();
+              callback();
+            }
+          });
+
+          observer.observe(wrapper, { attributes: true, attributeFilter: ['style'] });
+        }
+
+
+
         // Check if two portals are linked (exact coordinate match, no tolerance)
         plugin.portalsLinked = function (p1, p2) {
             return Object.values(window.links).some(link => {
@@ -61,6 +84,8 @@
 
         // Main analysis function
         plugin.analyze = function () {
+          const runAnalysis = () => {
+            
             if (window._microfieldLayer) {
                 window._microfieldLayer.clearLayers();
             } else {
@@ -332,7 +357,13 @@
                 });
                 $('#microfield-info-content').append(entry);
             });
-
+          };
+        
+          if (isMobileDevice()) {
+            waitInfoScreenClosed(runAnalysis);
+          } else {
+            runAnalysis();
+          }
         };
 
         // Add a button to IITC toolbox to trigger analysis

@@ -1,8 +1,8 @@
 // ==UserScript==
 // @id           microfield-checker@Xelminoe
-// @name         Microfield Checker Testing03
+// @name         Microfield Checker
 // @author       Xelminoe
-// @version      1.0.3
+// @version      1.0.4
 // @category     Info
 // @description  Check optimal microfield inside a triangle.
 // @match        https://intel.ingress.com/*
